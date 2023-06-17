@@ -1,5 +1,8 @@
 use plotters::style::colors::WHITE;
 use plotters::{backend, drawing};
+use rand::SeedableRng;
+use rand_distr::{Distribution, Normal};
+use rand_xorshift::XorShiftRng;
 
 const OUT_FILE_NAME: &'static str = "normal-dist.png";
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -9,5 +12,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     ));
     root.fill(&WHITE)?;
 
+    let sd = 0.13;
+    let random_points: Vec<(f64, f64)> = {
+        let norm_dist = Normal::new(0.5, sd).unwrap();
+        let mut x_rand = XorShiftRng::from_seed(*b"ANEXAMPLESEED__X");
+        let mut y_rand = XorShiftRng::from_seed(*b"ANEXAMPLESEED__Y");
+        let x_iter = norm_dist.sample_iter(&mut x_rand);
+        let y_iter = norm_dist.sample_iter(&mut y_rand);
+        x_iter.zip(y_iter).take(10_000).collect()
+    };
     todo!()
 }
