@@ -21,10 +21,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         x_iter.zip(y_iter).take(10_000).collect()
     };
     let areas = root.split_by_breakpoints([944], [80]);
+    // explicit
     let linspace = coord::combinators::IntoLinspace::step(0.0..1.0, 0.01).use_round();
     let segmented_coord = coord::ranged1d::IntoSegmentedCoord::into_segmented(linspace);
     let mut x_hist_ctx = chart::ChartBuilder::on(&areas[0])
         .y_label_area_size(40)
         .build_cartesian_2d(segmented_coord, 0..250)?;
+    // implicit
+    use coord::combinators::IntoLinspace;
+    let mut y_hist_ctx = chart::ChartBuilder::on(&areas[3])
+        .x_label_area_size(40)
+        .build_cartesian_2d(0..250, (0.0..1.0).step(0.01).use_round())?;
     todo!()
 }
